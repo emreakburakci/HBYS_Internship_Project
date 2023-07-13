@@ -23,13 +23,10 @@ public class HastaPresenter {
 
         List<Hasta> hastaList = hastaService.findAllHasta(stringFilter);
 
-         hastaList.forEach(h -> h.setTelefon(formatPhoneNumber(h.getTelefon())));
-
-
         return hastaList;
     }
 
-    private String formatPhoneNumber(String phoneNumber) {
+    public static String formatPhoneNumber(String phoneNumber) {
 
         if (phoneNumber.length() == 10) {
             return "(" + phoneNumber.substring(0, 3) + ")" +
@@ -48,7 +45,10 @@ public class HastaPresenter {
     }
 
     public Hasta findById(String id){
-        return hastaService.findById(id);
+
+        Hasta hasta = hastaService.findById(id);
+
+        return hasta;
     }
 
     public long countHasta() {
@@ -69,17 +69,8 @@ public class HastaPresenter {
 
     public Set<Personel> getRelatedPersonels(Hasta hasta) {
 
-       Set<Personel> personelSet = hasta.getPersonelSet();
-        personelSet.forEach(h -> h.setTelefon(formatPhoneNumber(h.getTelefon())));
-       return  personelSet;
 
-    }
-
-    public static String removeParanthesisFromTel(String telefon) {
-        if(telefon != null)
-        telefon = telefon.substring(1,4) + telefon.substring(5);
-        return telefon;
-
+       return  hasta.getPersonelSet();
 
     }
 

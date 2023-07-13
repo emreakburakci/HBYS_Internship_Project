@@ -1,16 +1,23 @@
 package com.example.application.views.list;
 
 import com.example.application.data.entity.Hasta;
+import com.example.application.data.entity.Log;
 import com.example.application.data.presenter.HastaPresenter;
+import com.example.application.data.service.LogService;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -43,11 +50,17 @@ public class HastaListView extends VerticalLayout {
     private Hasta selectedHasta;
     private Button relateButton;
     private ResourceBundleUtil rb ;
+    private Log.OperationType operationType;
 
+    private String currentPrincipalName;
+    private Authentication authentication;
 
     public HastaListView(HastaPresenter presenter) {
         this.presenter = presenter;
-        
+
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        currentPrincipalName = authentication.getName();
+
         rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
         addClassName("list-view");
         setSizeFull();
@@ -85,7 +98,9 @@ public class HastaListView extends VerticalLayout {
 
         grid.addClassNames("contact-grid");
         grid.setSizeFull();
-        grid.setColumns("TCNO", "isim", "soyisim", "email", "telefon");
+        grid.setColumns("TCNO", "isim", "soyisim", "email");
+
+        grid.addColumn(hasta -> HastaPresenter.formatPhoneNumber(hasta.getTelefon())).setKey("telefon");
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -103,6 +118,8 @@ public class HastaListView extends VerticalLayout {
         grid.getColumnByKey("soyisim").setHeader(rb.getString("lastName"));
         grid.getColumnByKey("email").setHeader(rb.getString("email"));
         grid.getColumnByKey("telefon").setHeader(rb.getString("phone"));
+
+
         grid.getColumnByKey("cinsiyet").setHeader(rb.getString("gender"));
 
         grid.asSingleSelect().addValueChangeListener(event -> {
@@ -153,32 +170,64 @@ public class HastaListView extends VerticalLayout {
 
 
     private void saveHasta(HastaForm.SaveEvent event) {
+
+
+        if(operationType == Log.OperationType.CREATE) {
+            event.getHasta().setCreatedUserId(currentPrincipalName);
+        }else{
+            event.getHasta().setUpdatedUserId(currentPrincipalName);
+        }
         presenter.saveHasta(event.getHasta());
+        LogService.log(currentPrincipalName, operationType,event.getHasta().getClass(),event.getHasta().getTCNO() );
+
         updateList();
         closeEditor();
     }
 
+    private void hasRelationNotification(Hasta h){
+
+        Notification notification = new Notification();
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+
+        Div text = new Div(new Text(h.getIsim() + " " + rb.getString("hasRelationError")));
+
+        Button closeButton = new Button(new Icon("lumo", "cross"));
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        closeButton.getElement().setAttribute("aria-label", "Close");
+        closeButton.addClickListener(event -> {
+            notification.close();
+        });
+
+        HorizontalLayout layout = new HorizontalLayout(text, closeButton);
+        layout.setAlignItems(Alignment.CENTER);
+
+        notification.add(layout);
+        notification.open();
+    }
     private void deleteHasta(HastaForm.DeleteEvent event) {
+        if(!event.getHasta().getPersonelSet().isEmpty()){
+            hasRelationNotification(event.getHasta());
+        }
         presenter.deleteHasta(event.getHasta());
+        LogService.log(currentPrincipalName, Log.OperationType.DELETE ,event.getHasta().getClass(),event.getHasta().getTCNO() );
+
         updateList();
         closeEditor();
     }
 
     public void editHasta(Hasta hasta) {
         selectedHasta = hasta;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
+
 
         if (hasta == null) {
             closeEditor();
         } else {
-            if(hasta.getTCNO()==null){
-                hasta.setCreatedUserId(currentPrincipalName);
+            if(hasta.getTCNO() == null){
+                operationType = Log.OperationType.CREATE;
             }else{
-                hasta.setUpdatedUserId(currentPrincipalName);
+                operationType = Log.OperationType.UPDATE;
             }
 
-            hasta.setTelefon(HastaPresenter.removeParanthesisFromTel(hasta.getTelefon()));
             form.setHasta(hasta);
             form.setVisible(true);
             addClassName("editing");

@@ -82,7 +82,8 @@ public class HastaPersonelListView extends VerticalLayout {
 
         hastaGrid.addClassNames("hasta-grid");
         hastaGrid.setSizeFull();
-        hastaGrid.setColumns("TCNO", "isim", "soyisim", "email", "telefon");
+        hastaGrid.setColumns("TCNO", "isim", "soyisim", "email");
+        hastaGrid.addColumn(hasta -> HastaPresenter.formatPhoneNumber(hasta.getTelefon())).setKey("telefon");
 
         hastaGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -106,8 +107,7 @@ public class HastaPersonelListView extends VerticalLayout {
                 String msg = rb.getString("patiencePersonnelRelation");
                 msg = MessageFormat.format(msg, event.getValue().getIsim() + " " + event.getValue().getSoyisim());
                 label.setText(msg);
-                // label.setText(rb.getString("patience")+" " + event.getValue().getIsim() + " "
-                // + event.getValue().getSoyisim() + " ile ilişkili personeller:");
+
             }
         });
 
@@ -118,13 +118,12 @@ public class HastaPersonelListView extends VerticalLayout {
         if (hasta != null) {
             personelGrid.setItems(hasta.getPersonelSet());
         }
-        System.out.println("SHOW RELATED HASTA");
+
 
     }
 
     private void showRelatedHasta(Personel personel) {
 
-        System.out.println("SHOW RELATED PERSONEL");
         if (personel != null) {
             hastaGrid.setItems(personel.getHastaSet());
         }
@@ -135,7 +134,8 @@ public class HastaPersonelListView extends VerticalLayout {
 
         personelGrid.addClassNames("contact-grid");
         personelGrid.setSizeFull();
-        personelGrid.setColumns("personelId", "isim", "soyisim", "telefon");
+        personelGrid.setColumns("personelId", "isim", "soyisim");
+        personelGrid.addColumn(personel -> PersonelPresenter.formatPhoneNumber(personel.getTelefon())).setKey("telefon");
 
         personelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -147,7 +147,6 @@ public class HastaPersonelListView extends VerticalLayout {
                         msg = MessageFormat.format(msg,
                                 event.getValue().getIsim() + " " + event.getValue().getSoyisim());
                         label.setText(msg);
-                        //label.setText("Personel " + event.getValue().getIsim() + " " + event.getValue().getSoyisim()+ " ile ilişkili hastalar:");
                     }
                 });
 
@@ -193,13 +192,11 @@ public class HastaPersonelListView extends VerticalLayout {
     }
 
     private void updateHastaList() {
-        System.out.println("UPDATE HASTA LIST");
 
         hastaGrid.setItems(hastaPresenter.findAllHasta(hastaFilterText.getValue()));
     }
 
     private void updatePersonelList() {
-        System.out.println("UPDATE PERSONEL LIST ");
 
         personelGrid.setItems(personelPresenter.findAllPersonel(personelFilterText.getValue()));
     }

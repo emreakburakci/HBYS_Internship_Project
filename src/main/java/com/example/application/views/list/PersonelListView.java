@@ -1,13 +1,22 @@
 package com.example.application.views.list;
 
+import com.example.application.data.entity.Hasta;
+import com.example.application.data.entity.Log;
 import com.example.application.data.entity.Personel;
 import com.example.application.data.presenter.HastaPresenter;
 import com.example.application.data.presenter.PersonelPresenter;
+import com.example.application.data.service.LogService;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -44,11 +53,16 @@ public class PersonelListView extends VerticalLayout {
     private Button relateButton;
     private Personel selectedPersonel;
     private ResourceBundleUtil rb ;
+    private String currentPrincipalName;
+    private Log.OperationType operationType;
+
 
     public PersonelListView(PersonelPresenter presenter) {
         this.presenter = presenter;
         rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        currentPrincipalName = authentication.getName();
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -81,7 +95,7 @@ private void configureForm() {
         grid.setSizeFull();
         grid.setColumns("personelId","isim", "soyisim");
 
-        grid.addColumn(hasta -> formatPhoneNumber(hasta.getTelefon()))
+        grid.addColumn(personel -> PersonelPresenter.formatPhoneNumber(personel.getTelefon()))
                 .setHeader("Telefon")
                 .setAutoWidth(true).setKey("telefon");
 
@@ -102,15 +116,7 @@ private void configureForm() {
         grid.getColumnByKey("telefon").setHeader(rb.getString("phone"));
     }
 
-    private String formatPhoneNumber(String phoneNumber) {
 
-        if (phoneNumber.length() == 10) {
-            return "(" + phoneNumber.substring(0, 3) + ")" +
-                    phoneNumber.substring(3);
-        } else {
-            return phoneNumber; // Return the original phone number if it doesn't match the expected length
-        }
-    }
 
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder(rb.getString("filterTextPlaceHolder"));
@@ -130,14 +136,46 @@ private void configureForm() {
     }
 
     private void savePersonel(PersonelForm.SaveEvent event) {
+
+        if(operationType == Log.OperationType.CREATE){
+            event.getPersonel().setCreatedUserId(currentPrincipalName);
+        }else{
+            event.getPersonel().setUpdatedUserId(currentPrincipalName);
+        }
         presenter.savePersonel(event.getPersonel());
+        LogService.log(currentPrincipalName,operationType, event.getPersonel().getClass(),Long.toString(event.getPersonel().getPersonelId()));
+
         updateList();
         closeEditor();
     }
+    private void hasRelationNotification(Personel p){
 
+        Notification notification = new Notification();
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        notification.setPosition(Notification.Position.MIDDLE);
+        notification.setDuration(3000);
+        Div text = new Div(new Text(p.getIsim() + " " + rb.getString("hasRelationError")));
+
+        Button closeButton = new Button(new Icon("lumo", "cross"));
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        closeButton.getElement().setAttribute("aria-label", "Close");
+        closeButton.addClickListener(event -> {
+            notification.close();
+        });
+
+        HorizontalLayout layout = new HorizontalLayout(text, closeButton);
+        layout.setAlignItems(Alignment.CENTER);
+
+        notification.add(layout);
+        notification.open();
+    }
     private void deletePersonel(PersonelForm.DeleteEvent event) {
-        presenter.deletePersonel(event.getPersonel());
-        updateList();
+        if(!event.getPersonel().getHastaSet().isEmpty()){
+            hasRelationNotification(event.getPersonel());
+        }else{ presenter.deletePersonel(event.getPersonel());
+            LogService.log(currentPrincipalName,Log.OperationType.DELETE,event.getPersonel().getClass(),Long.toString(event.getPersonel().getPersonelId()));
+            updateList();}
+
         closeEditor();
     }
 
@@ -150,13 +188,11 @@ private void configureForm() {
         } else {
 
             if(personel.getPersonelId() == 0){
-                personel.setCreatedUserId(currentPrincipalName);
+                operationType = Log.OperationType.CREATE;
             }else{
-                personel.setUpdatedUserId(currentPrincipalName);
+                operationType = Log.OperationType.UPDATE;
             }
 
-
-            personel.setTelefon(PersonelPresenter.removeParanthesisFromTel(personel.getTelefon()));
 
             form.setPersonel(personel);
             form.setVisible(true);

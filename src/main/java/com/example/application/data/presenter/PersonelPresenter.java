@@ -24,13 +24,11 @@ public class PersonelPresenter {
         
             List<Personel> personelList = personelService.findAllPersonel(stringFilter);
 
-            personelList.forEach(p -> p.setTelefon(formatPhoneNumber(p.getTelefon())));
-
             return personelList;
         
     }
 
-    private String formatPhoneNumber(String phoneNumber) {
+    public static String formatPhoneNumber(String phoneNumber) {
 
         if (phoneNumber.length() == 10) {
             return "(" + phoneNumber.substring(0, 3) + ")" +
@@ -71,9 +69,5 @@ public class PersonelPresenter {
 
 
 
-    public static String removeParanthesisFromTel(String telefon) {
-        if(telefon != null)
-        telefon = telefon.substring(1,4) + telefon.substring(5);
-        return telefon;
-    }
+
 }

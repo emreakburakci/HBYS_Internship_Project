@@ -111,15 +111,14 @@ public class PersonelRelationView extends VerticalLayout implements HasUrlParame
 
         notRelatedHastaGrid.addClassNames("personel-grid");
         notRelatedHastaGrid.setSizeFull();
-        notRelatedHastaGrid.setColumns("TCNO", "isim", "soyisim", "telefon");
+        notRelatedHastaGrid.setColumns("TCNO", "isim", "soyisim");
+        notRelatedHastaGrid.addColumn(hasta -> HastaPresenter.formatPhoneNumber(hasta.getTelefon())).setKey("telefon");
         notRelatedHastaGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         notRelatedHastaGrid.addComponentColumn(hasta -> {
             Button button = new Button("", VaadinIcon.ARROW_LEFT.create());
-            System.out.println("RELATE BUTTONLA İLİŞKİLİ PERSONEL ID" + hasta.getTCNO());
+
             button.addClickListener(e ->{
-                
-                System.err.println("BUTTON RELATING PERSONEL " + hasta.getTCNO() + " -- " + personel.getPersonelId());
                 
                 relate(hasta);});
             return button;
@@ -138,15 +137,14 @@ public class PersonelRelationView extends VerticalLayout implements HasUrlParame
 
         relatedHastaGrid.addClassNames("personel-grid");
         relatedHastaGrid.setSizeFull();
-        relatedHastaGrid.setColumns("TCNO", "isim", "soyisim", "telefon");
+        relatedHastaGrid.setColumns("TCNO", "isim", "soyisim");
+        relatedHastaGrid.addColumn(hasta -> HastaPresenter.formatPhoneNumber(hasta.getTelefon())).setKey("telefon");
         relatedHastaGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         relatedHastaGrid.addComponentColumn(hasta -> {
             Button button = new Button("", VaadinIcon.ARROW_RIGHT.create());
-            System.out.println("UNRELATE BUTTONLA İLİŞKİLİ PERSONEL ID" + hasta.getTCNO());
             button.addClickListener(e -> {
                 
-                System.err.println("BUTTON UN-RELATING PERSONEL " + hasta.getTCNO() + " -- " + personel.getPersonelId());
                 unRelate(hasta);});
             return button;
         } );
@@ -163,25 +161,16 @@ public class PersonelRelationView extends VerticalLayout implements HasUrlParame
 
     private void unRelate(Hasta hasta){
 
-        System.out.println("UNRELATE metodu");
-        //Neden hata verdi?
-        //personel.getHastaSet().remove(hasta);
-        //personel = personelPresenter.saveAndFlush(personel);
-
         hasta.getPersonelSet().remove(personel);
         hasta = hastaPresenter.saveAndFlush(hasta);
         personel = personelPresenter.findById(personel.getPersonelId()+"");
+        hasta = hastaPresenter.findById(hasta.getTCNO());
         updateRelatedHastaGrid();
         updateNotRelatedHastaGrid();
 
     }
 
     private void relate(Hasta hasta){
-
-        System.out.println("RELATE metodu");
-        //Neden hata verdi?
-        //personel.getHastaSet().add(hasta);
-        //personel = personelPresenter.saveAndFlush(personel);
 
         hasta.getPersonelSet().add(personel);
         hasta = hastaPresenter.saveAndFlush(hasta);
@@ -193,16 +182,12 @@ public class PersonelRelationView extends VerticalLayout implements HasUrlParame
 
     private void updateRelatedHastaGrid() {
 
-        System.out.println("UPDATE RELATED PERSONEL GRID");
-
-
         relatedHastaGrid.setItems(personel.getHastaSet());
 
     }
     private void updateNotRelatedHastaGrid() {
 
 
-        System.out.println("UPDATE NOT RELATED PERSONEL GRİD");
         List<Hasta> all = hastaPresenter.findAllHasta("");
         Set<Hasta> relatedHastaSet = personel.getHastaSet();
 
@@ -223,7 +208,6 @@ public class PersonelRelationView extends VerticalLayout implements HasUrlParame
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
 
-        System.out.println("SET PARAMETER METHOD");
         RouteParameters rp = event.getRouteParameters();
 
         personel = personelPresenter.findById(rp.get("pid").get());
