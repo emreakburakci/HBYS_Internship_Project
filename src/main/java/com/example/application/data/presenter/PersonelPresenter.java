@@ -72,6 +72,7 @@ public class PersonelPresenter {
 
 
     public static String removeParanthesisFromTel(String telefon) {
+        if(telefon != null)
         telefon = telefon.substring(1,4) + telefon.substring(5);
         return telefon;
     }

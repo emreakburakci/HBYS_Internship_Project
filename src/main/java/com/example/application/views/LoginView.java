@@ -1,6 +1,7 @@
 package com.example.application.views;
 
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -20,7 +21,10 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 		setAlignItems(Alignment.CENTER); 
 		setJustifyContentMode(JustifyContentMode.CENTER);
 
-		login.setAction("login");  
+		login.setAction("login");
+
+		Image image = new Image("images/logo.png", "My Alt Image");
+		add(image);
 
 		add(new H1("Emre HBYS"), login);
 	}

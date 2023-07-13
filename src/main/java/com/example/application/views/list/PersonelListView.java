@@ -18,6 +18,8 @@ import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.VaadinSession;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.ResourceBundle;
@@ -141,9 +143,19 @@ private void configureForm() {
 
     public void editPersonel(Personel personel) {
         selectedPersonel = personel;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
         if (personel == null) {
             closeEditor();
         } else {
+
+            if(personel.getPersonelId() == 0){
+                personel.setCreatedUserId(currentPrincipalName);
+            }else{
+                personel.setUpdatedUserId(currentPrincipalName);
+            }
+
+
             personel.setTelefon(PersonelPresenter.removeParanthesisFromTel(personel.getTelefon()));
 
             form.setPersonel(personel);

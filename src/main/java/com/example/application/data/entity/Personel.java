@@ -1,19 +1,22 @@
 package com.example.application.data.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Range;
+
+import java.time.Instant;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Personel {
 
     @Id
+    @Range(min = 1, message = "Personel Id 0 yada negatif olamaz!")
     private long personelId;
     
     @NotEmpty
@@ -29,6 +32,52 @@ public class Personel {
 
     @ManyToMany(mappedBy = "personelSet", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Hasta> hastaSet;
+
+    @UpdateTimestamp
+    private Instant lastUpdatedOn;
+    @CreationTimestamp
+    private Instant createdOn;
+
+    private String updatedUserId;
+
+    private String createdUserId;
+
+    public String getUpdatedUserId() {
+        return updatedUserId;
+    }
+
+    public void setUpdatedUserId(String updatedUserId) {
+        this.updatedUserId = updatedUserId;
+    }
+
+    public String getCreatedUserId() {
+        return createdUserId;
+    }
+
+    public void setCreatedUserId(String createdUserId) {
+        this.createdUserId = createdUserId;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+
+        this.createdOn = createdOn;
+    }
+
+    public Instant getLastUpdatedOn() {
+        return lastUpdatedOn;
+    }
+
+    public void setLastUpdatedOn(Instant lastUpdatedOn) {
+        this.lastUpdatedOn = lastUpdatedOn;
+    }
+
+
+
+
 
     public long getPersonelId() {
         return personelId;

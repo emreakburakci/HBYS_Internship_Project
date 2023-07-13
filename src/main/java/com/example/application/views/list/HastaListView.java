@@ -166,10 +166,18 @@ public class HastaListView extends VerticalLayout {
 
     public void editHasta(Hasta hasta) {
         selectedHasta = hasta;
-        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
         if (hasta == null) {
             closeEditor();
         } else {
+            if(hasta.getTCNO()==null){
+                hasta.setCreatedUserId(currentPrincipalName);
+            }else{
+                hasta.setUpdatedUserId(currentPrincipalName);
+            }
+
             hasta.setTelefon(HastaPresenter.removeParanthesisFromTel(hasta.getTelefon()));
             form.setHasta(hasta);
             form.setVisible(true);

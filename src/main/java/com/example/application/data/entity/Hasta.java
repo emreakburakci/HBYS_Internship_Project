@@ -1,5 +1,9 @@
 package com.example.application.data.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -43,6 +47,49 @@ public class Hasta {
     joinColumns = @JoinColumn(name ="TCNO"),
     inverseJoinColumns = @JoinColumn(name ="personelId"))
     private Set<Personel> personelSet;
+
+    @CreationTimestamp
+    private Instant createdOn;
+
+    @UpdateTimestamp
+    private Instant lastUpdatedOn;
+
+    private String updatedUserId;
+
+    private String createdUserId;
+
+    public String getUpdatedUserId() {
+        return updatedUserId;
+    }
+
+    public void setUpdatedUserId(String updatedUserId) {
+        this.updatedUserId = updatedUserId;
+    }
+
+    public String getCreatedUserId() {
+        return createdUserId;
+    }
+
+    public void setCreatedUserId(String createdUserId) {
+        this.createdUserId = createdUserId;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Instant getLastUpdatedOn() {
+        return lastUpdatedOn;
+    }
+
+    public void setLastUpdatedOn(Instant lastUpdatedOn) {
+        this.lastUpdatedOn = lastUpdatedOn;
+    }
+
 
 
     public String getTCNO() {
