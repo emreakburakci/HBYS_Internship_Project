@@ -54,14 +54,15 @@ public class HastaListView extends VerticalLayout {
 
     private String currentPrincipalName;
     private Authentication authentication;
-
+    private String lang;
     public HastaListView(HastaPresenter presenter) {
         this.presenter = presenter;
 
         authentication = SecurityContextHolder.getContext().getAuthentication();
         currentPrincipalName = authentication.getName();
+        lang = VaadinSession.getCurrent().getAttribute("language").toString();
+        rb = new ResourceBundleUtil(lang);
 
-        rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -87,7 +88,7 @@ public class HastaListView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new HastaForm();
+        form = new HastaForm(lang);
         form.setWidth("25em");
         form.addListener(HastaForm.SaveEvent.class, this::saveHasta);
         form.addListener(HastaForm.DeleteEvent.class, this::deleteHasta);
@@ -200,7 +201,8 @@ public class HastaListView extends VerticalLayout {
 
         HorizontalLayout layout = new HorizontalLayout(text, closeButton);
         layout.setAlignItems(Alignment.CENTER);
-
+        notification.setPosition(Notification.Position.MIDDLE);
+        notification.setDuration(3000);
         notification.add(layout);
         notification.open();
     }

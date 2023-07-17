@@ -117,6 +117,7 @@ public class HastaPersonelListView extends VerticalLayout {
 
         if (hasta != null) {
             personelGrid.setItems(hasta.getPersonelSet());
+            hastaGrid.setItems(hasta);
         }
 
 
@@ -126,6 +127,7 @@ public class HastaPersonelListView extends VerticalLayout {
 
         if (personel != null) {
             hastaGrid.setItems(personel.getHastaSet());
+            personelGrid.setItems(personel);
         }
 
     }

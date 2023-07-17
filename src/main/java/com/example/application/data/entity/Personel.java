@@ -2,6 +2,7 @@ package com.example.application.data.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.Instant;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -17,7 +19,8 @@ public class Personel {
 
     @Id
     @Range(min = 1, message = "Personel Id 0 yada negatif olamaz!")
-    private long personelId;
+    @NotNull
+    private Long personelId;
     
     @NotEmpty
     private String isim = "";
@@ -25,7 +28,6 @@ public class Personel {
     @NotEmpty
     private String soyisim = "";
 
-    
      @Pattern(regexp="^[1-9][0-9]{9}$"
             , message="Lütfen 5XXXXXXXXX formatında giriniz!")
     private String telefon;
@@ -75,15 +77,11 @@ public class Personel {
         this.lastUpdatedOn = lastUpdatedOn;
     }
 
-
-
-
-
-    public long getPersonelId() {
+    public Long getPersonelId() {
         return personelId;
     }
 
-    public void setPersonelId(long personelId) {
+    public void setPersonelId(Long personelId) {
         this.personelId = personelId;
     }
 

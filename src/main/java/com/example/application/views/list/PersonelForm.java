@@ -1,6 +1,7 @@
 package com.example.application.views.list;
 
 import com.example.application.data.entity.Personel;
+import com.example.application.util.ResourceBundleUtil;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -17,20 +18,26 @@ import com.vaadin.flow.shared.Registration;
 
 public class PersonelForm extends FormLayout {
   private Personel personel;
-
-  TextField isim = new TextField("First name");
-  TextField soyisim = new TextField("Last name");
-  TextField personelId = new TextField("PersonelId");
-  TextField telefon = new TextField("Telefon");
-
-  Binder<Personel> binder = new BeanValidationBinder<>(Personel.class);
-
-  Button save = new Button("Kaydet");
-  Button delete = new Button("Sil");
-  Button close = new Button("İptal");
-
-  public PersonelForm() {
+  private Binder<Personel> binder;
+  private TextField isim, soyisim, personelId, telefon;
+  private Button save, delete, close;
+  private ResourceBundleUtil rb;
+  public PersonelForm(String lang) {
     addClassName("personel-form");
+
+    rb = new ResourceBundleUtil(lang);
+     isim = new TextField(rb.getString("name"));
+     soyisim = new TextField(rb.getString("lastName"));
+     personelId = new TextField(rb.getString("personnelId"));
+     telefon = new TextField(rb.getString("phone"));
+
+     save = new Button(rb.getString("save"));
+     delete = new Button(rb.getString("delete"));
+     close = new Button(rb.getString("cancel"));
+
+
+
+    binder = new BeanValidationBinder<>(Personel.class);
     binder.bindInstanceFields(this);
 
     binder.addStatusChangeListener(event -> {
