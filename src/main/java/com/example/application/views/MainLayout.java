@@ -2,9 +2,9 @@ package com.example.application.views;
 
 import com.example.application.security.SecurityService;
 import com.example.application.util.ResourceBundleUtil;
-import com.example.application.views.list.HastaListView;
-import com.example.application.views.list.HastaPersonelListView;
-import com.example.application.views.list.PersonelListView;
+import com.example.application.views.list.PatienceListView;
+import com.example.application.views.list.PatiencePersonnelListView;
+import com.example.application.views.list.PersonnelListView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -76,13 +76,13 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        RouterLink listLink = new RouterLink(rb.getString("patienceList"), HastaListView.class);
+        RouterLink listLink = new RouterLink(rb.getString("patienceList"), PatienceListView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink listLink2 = new RouterLink(rb.getString("personnelList"), PersonelListView.class);
+        RouterLink listLink2 = new RouterLink(rb.getString("personnelList"), PersonnelListView.class);
         listLink2.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink listLink3 = new RouterLink(rb.getString("personnelPatienceList"), HastaPersonelListView.class);
+        RouterLink listLink3 = new RouterLink(rb.getString("personnelPatienceList"), PatiencePersonnelListView.class);
         listLink2.setHighlightCondition(HighlightConditions.sameLocation());
         
         addToDrawer(new VerticalLayout(
