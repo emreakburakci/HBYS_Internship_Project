@@ -3,7 +3,6 @@ package com.example.application.views.list;
 
 
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 import com.example.application.data.entity.Patience;
 import com.example.application.data.entity.Personnel;
@@ -11,7 +10,6 @@ import com.example.application.data.presenter.PatiencePresenter;
 import com.example.application.data.presenter.PersonnelPresenter;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
-import com.nimbusds.jose.util.Resource;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -29,7 +27,7 @@ import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.VaadinSession;
 
 @Route(value = "relp/:pid", layout = MainLayout.class)
-@PageTitle("Personel İlişki | Emre HBYS")
+@PageTitle("Emre HBYS")
 
 public class PersonnelRelationView extends VerticalLayout implements HasUrlParameter<String> {
 

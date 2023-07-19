@@ -1,17 +1,13 @@
 package com.example.application.views.list;
 
-
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
-
 import com.example.application.data.entity.Patience;
 import com.example.application.data.entity.Personnel;
 import com.example.application.data.presenter.PatiencePresenter;
 import com.example.application.data.presenter.PersonnelPresenter;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
-import com.nimbusds.jose.util.Resource;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -26,31 +22,28 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParameters;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 
 @Route(value = "relate/:PatienceTC", layout = MainLayout.class)
-@PageTitle("Personel İlişki | Emre HBYS")
+@PageTitle("Emre HBYS")
 public class PatienceRelationView extends VerticalLayout implements HasUrlParameter<String> {
 
     PersonnelPresenter personnelPresenter;
     PatiencePresenter patiencePresenter;
-
-    Grid<Personnel> relatedPersonnelGrid = new Grid<>(Personnel.class);
-    Grid<Personnel> notRelatedPersonnelGrid = new Grid<>(Personnel.class);
-    FormLayout patienceInfo;
-    FormLayout gridLabels;
+    Grid<Personnel> relatedPersonnelGrid, notRelatedPersonnelGrid;
+    FormLayout patienceInfo, gridLabels;
     ResourceBundleUtil rb;
-
     Patience patience;
 
-    public PatienceRelationView(PersonnelPresenter personelPresenter, PatiencePresenter patiencePresenter) {
+    public PatienceRelationView(PersonnelPresenter personnelPresenter, PatiencePresenter patiencePresenter) {
 
-        this.personnelPresenter = personelPresenter;
+        this.personnelPresenter = personnelPresenter;
         this.patiencePresenter = patiencePresenter;
 
-        rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
+        relatedPersonnelGrid = new Grid<>(Personnel.class);
+        notRelatedPersonnelGrid = new Grid<>(Personnel.class);
 
+        rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
 
         addClassName("hasta-personel");
         setSizeFull();
@@ -63,7 +56,6 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         gridLabels = new FormLayout(related, notRelated);
 
         add(patienceInfo, gridLabels, getContent());
-
 
     }
 
@@ -116,7 +108,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         notRelatedPersonnelGrid.addClassNames("personel-grid");
         notRelatedPersonnelGrid.setSizeFull();
         notRelatedPersonnelGrid.setColumns("personnelId", "name", "lastName");
-        notRelatedPersonnelGrid.addColumn(personel -> PersonnelPresenter.formatPhoneNumber(personel.getPhone())).setKey("phone");
+        notRelatedPersonnelGrid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone())).setKey("phone");
         notRelatedPersonnelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         notRelatedPersonnelGrid.addComponentColumn(personnel -> {
@@ -143,7 +135,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         relatedPersonnelGrid.addClassNames("personel-grid");
         relatedPersonnelGrid.setSizeFull();
         relatedPersonnelGrid.setColumns("personnelId", "name", "lastName");
-        relatedPersonnelGrid.addColumn(personel -> PersonnelPresenter.formatPhoneNumber(personel.getPhone())).setKey("phone");
+        relatedPersonnelGrid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone())).setKey("phone");
         relatedPersonnelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         relatedPersonnelGrid.addComponentColumn(personnel -> {
@@ -167,7 +159,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
 
         patience.getPersonnelSet().remove(personnel);
         patience = patiencePresenter.saveAndFlush(patience);
-        updateRelatedPersonelGrid();
+        updateRelatedPersonnelGrid();
         updateNotRelatedPersonnelGrid();
 
     }
@@ -176,12 +168,12 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
 
         patience.getPersonnelSet().add(personnel);
         patience = patiencePresenter.saveAndFlush(patience);
-        updateRelatedPersonelGrid();
+        updateRelatedPersonnelGrid();
         updateNotRelatedPersonnelGrid();
 
     }
 
-    private void updateRelatedPersonelGrid() {
+    private void updateRelatedPersonnelGrid() {
 
 
         relatedPersonnelGrid.setItems(patiencePresenter.getRelatedPersonnels(patience));
@@ -216,7 +208,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         patience = patiencePresenter.findById(rp.get("PatienceTC").get());
 
         configurePatienceInfo();
-        updateRelatedPersonelGrid();
+        updateRelatedPersonnelGrid();
         updateNotRelatedPersonnelGrid();
     }
 

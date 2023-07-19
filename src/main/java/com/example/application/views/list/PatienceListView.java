@@ -6,11 +6,11 @@ import com.example.application.data.presenter.PatiencePresenter;
 import com.example.application.data.service.LogService;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -26,21 +26,15 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.server.VaadinSession;
-
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javax.annotation.security.PermitAll;
-
 @Component
 @Scope("prototype")
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Patience Listesi | Emre HBYS")
+@PageTitle("Emre HBYS")
 @PermitAll
 public class PatienceListView extends VerticalLayout {
     private Grid<Patience> grid = new Grid<>(Patience.class);
@@ -51,17 +45,19 @@ public class PatienceListView extends VerticalLayout {
     private Button relateButton;
     private ResourceBundleUtil rb ;
     private Log.OperationType operationType;
-
     private String currentPrincipalName;
     private Authentication authentication;
     private String lang;
     public PatienceListView(PatiencePresenter presenter) {
+        System.out.println("PATIENCE CONSTRUCTOR ÇALIŞTI");
         this.presenter = presenter;
 
         authentication = SecurityContextHolder.getContext().getAuthentication();
         currentPrincipalName = authentication.getName();
         lang = VaadinSession.getCurrent().getAttribute("language").toString();
         rb = new ResourceBundleUtil(lang);
+
+        UI.getCurrent().getPage().setTitle(rb.getString("patienceListTitle"));
 
         addClassName("list-view");
         setSizeFull();
@@ -105,13 +101,14 @@ public class PatienceListView extends VerticalLayout {
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        grid.addComponentColumn(Patience -> {
+        grid.addComponentColumn(patience -> {
             HorizontalLayout genderField = new HorizontalLayout();
-            Label label = new Label(Patience.getGender());
-            genderField.add(label, createGenderIcon(Patience.getGender()));
+            Label label = new Label(rb.getString(patience.getGender()));
+
+            genderField.add(createGenderIcon(patience.getGender()),label);
             return genderField;
 
-        }).setHeader("Cinsiyet").setAutoWidth(true).setKey("gender");;
+        }).setHeader("Cinsiyet").setAutoWidth(true).setKey("gender");
 
 
         grid.getColumnByKey("name").setHeader(rb.getString("name"));
@@ -155,6 +152,7 @@ public class PatienceListView extends VerticalLayout {
 
         Button addPatienceButton = new Button(rb.getString("addPatience"));
         addPatienceButton.addClickListener(click -> addPatience());
+        addPatienceButton.addClickShortcut(Key.KEY_H);
         
 
 

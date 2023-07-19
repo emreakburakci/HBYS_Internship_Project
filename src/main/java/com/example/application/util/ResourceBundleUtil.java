@@ -4,7 +4,8 @@ import java.util.ResourceBundle;
 
 public class ResourceBundleUtil {
 
-    private  ResourceBundle rb ;
+    private ResourceBundle rb ;
+
 
     public ResourceBundleUtil(String language){
 
@@ -15,10 +16,7 @@ public class ResourceBundleUtil {
 
     public String getString(String key){
 
-        
         return rb.getString(key);
     }
 
-
-    
 }

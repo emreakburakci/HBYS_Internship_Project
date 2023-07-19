@@ -1,15 +1,9 @@
 package com.example.application.views.list;
 
 import java.util.List;
-import java.util.Random;
-
 import com.example.application.util.ResourceBundleUtil;
-import com.vaadin.server.VaadinSession;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.example.application.data.entity.Patience;
 import com.example.application.data.presenter.PatiencePresenter;
-import com.example.application.data.presenter.PersonnelPresenter;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -36,9 +30,6 @@ public class PatienceForm extends FormLayout {
 
     private ResourceBundleUtil rb;
 
-    @Autowired
-    PersonnelPresenter personelPresenter;
-
     public PatienceForm(String lang) {
 
         addClassName("Patience-form");
@@ -49,7 +40,7 @@ public class PatienceForm extends FormLayout {
         tcno = new TextField(rb.getString("TCNO"));
         lastName = new TextField(rb.getString("lastName"));
         name = new TextField(rb.getString("name"));
-        gender = new ComboBox<>(rb.getString("gender"), List.of("Erkek", "Kadın", "Diğer"));
+        gender = new ComboBox<>(rb.getString("gender"), List.of(rb.getString("Erkek"),rb.getString("Kadın"),rb.getString("Diğer")));
         phone = new TextField(rb.getString("phone"));
         email = new EmailField(rb.getString("email"));
         save = new Button(rb.getString("save"));
@@ -87,12 +78,17 @@ public class PatienceForm extends FormLayout {
     public void setPatience(Patience patience) {
         this.patience = patience;
         binder.readBean(patience);
+        if(patience != null && patience.getGender() != null){
+        gender.setValue(rb.getString(patience.getGender()));
+    }
     }
 
     private void validateAndSave() {
         try {
 
             binder.writeBean(patience);
+            patience.setGender(PatiencePresenter.translateGender(patience.getGender()));
+
             fireEvent(new SaveEvent(this, patience));
         } catch (ValidationException e) {
             e.printStackTrace();

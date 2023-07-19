@@ -19,6 +19,19 @@ public class PatiencePresenter {
 
     }
 
+    public static String translateGender(String gender) {
+        String result = gender;
+        if(gender.equals("Male")){
+            result = "Erkek";
+        }else if(gender.equals("Female")){
+            result = "Kadın";
+        }else if(gender.equals("Other")){
+            result = "Diğer";
+        }
+
+        return result;
+    }
+
     public List<Patience> findAllPatience(String stringFilter) {
 
         List<Patience> patienceList = patienceService.findAllPatience(stringFilter);

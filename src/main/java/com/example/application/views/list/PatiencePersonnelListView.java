@@ -6,6 +6,7 @@ import com.example.application.data.presenter.PatiencePresenter;
 import com.example.application.data.presenter.PersonnelPresenter;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -28,24 +29,18 @@ import javax.annotation.security.PermitAll;
 @Component
 @Scope("prototype")
 @Route(value = "hasta-personel", layout = MainLayout.class)
-@PageTitle("Hasta Personel Listesi | Emre HBYS")
+@PageTitle("Emre HBYS")
+
 @PermitAll
 public class PatiencePersonnelListView extends VerticalLayout {
 
-    Grid<Patience> patienceGrid = new Grid<>(Patience.class);
-    Grid<Personnel> personnelGrid = new Grid<>(Personnel.class);
-
-    TextField patienceFilterText = new TextField();
-    TextField personnelFilterText = new TextField();
-
+    Grid<Patience> patienceGrid;
+    Grid<Personnel> personnelGrid;
+    TextField patienceFilterText, personnelFilterText;
     Button resetGrids;
-
     ResourceBundleUtil rb;
-
     FormLayout labelLayout ;
-    H3 patienceLabel = new H3("");
-    H3 personnelLabel = new H3("");
-
+    H3 patienceLabel, personnelLabel;
     PatiencePresenter patiencePresenter;
     PersonnelPresenter personnelPresenter;
 
@@ -53,23 +48,34 @@ public class PatiencePersonnelListView extends VerticalLayout {
 
         this.patiencePresenter = patiencePresenter;
         this.personnelPresenter = personnelPresenter;
-        rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
 
+        patienceGrid = new Grid<>(Patience.class);
+        personnelGrid = new Grid<>(Personnel.class);
+
+        patienceFilterText = new TextField();
+        personnelFilterText = new TextField();
+
+        rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
+        UI.getCurrent().getPage().setTitle(rb.getString("patiencePersonnelListTitle"));
         addClassName("list-view");
         setSizeFull();
-        configureHastaGrid();
-        configurePersonelGrid();
 
+        configurePatienceGrid();
+        configurePersonnelGrid();
+        configureLabelLayout();
+
+        add(getToolbar(), labelLayout, getContent());
+        updatePatienceList();
+        updatePersonnelList();
+        // closeEditor();
+    }
+
+    private void configureLabelLayout(){
         patienceLabel = new H3("");
         personnelLabel = new H3("");
         labelLayout = new FormLayout();
         labelLayout.add(patienceLabel, personnelLabel);
-        add(getToolbar(), labelLayout, getContent());
-        updateHastaList();
-        updatePersonelList();
-        // closeEditor();
     }
-
     private HorizontalLayout getContent() {
         HorizontalLayout content = new HorizontalLayout(patienceGrid, personnelGrid);
 
@@ -81,25 +87,27 @@ public class PatiencePersonnelListView extends VerticalLayout {
         return content;
     }
 
-    private void configureHastaGrid() {
+    private void configurePatienceGrid() {
 
         patienceGrid.addClassNames("hasta-grid");
         patienceGrid.setSizeFull();
         patienceGrid.setColumns("TCNO", "name", "lastName", "email");
-        patienceGrid.addColumn(hasta -> PatiencePresenter.formatPhoneNumber(hasta.getPhone())).setKey("phone");
+        patienceGrid.addColumn(patience -> PatiencePresenter.formatPhoneNumber(patience.getPhone()))
+                .setKey("phone")
+                .setHeader(rb.getString("phone"));
 
         patienceGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        patienceGrid.addComponentColumn(hasta -> {
+        patienceGrid.addComponentColumn(patience -> {
             HorizontalLayout genderField = new HorizontalLayout();
-            Label label = new Label(hasta.getGender());
-            genderField.add(label, createGenderIcon(hasta.getGender()));
+            Label label = new Label(rb.getString(patience.getGender()));
+            genderField.add(createGenderIcon(patience.getGender()),label);
             return genderField;
 
-        }).setHeader("Cinsiyet").setAutoWidth(true);
+        }).setHeader(rb.getString("gender")).setAutoWidth(true);
 
-        patienceGrid.getColumnByKey("name").setHeader("İsim");
-        patienceGrid.getColumnByKey("TCNO").setHeader("TC Kimlik No");
+        patienceGrid.getColumnByKey("name").setHeader(rb.getString("name"));
+        patienceGrid.getColumnByKey("TCNO").setHeader(rb.getString("TCNO"));
 
         patienceGrid.setItems(patiencePresenter.findAllPatience(patienceFilterText.getValue()));
         personnelGrid.setItems(personnelPresenter.findAllPersonnel(personnelFilterText.getValue()));
@@ -123,31 +131,31 @@ public class PatiencePersonnelListView extends VerticalLayout {
             personnelGrid.setItems(patience.getPersonnelSet());
             patienceGrid.setItems(patience);
         }
-
-
     }
 
-    private void showRelatedHasta(Personnel personel) {
+    private void showRelatedPatience(Personnel personnel) {
 
-        if (personel != null) {
-            patienceGrid.setItems(personel.getPatienceSet());
-            personnelGrid.setItems(personel);
+        if (personnel != null) {
+            patienceGrid.setItems(personnel.getPatienceSet());
+            personnelGrid.setItems(personnel);
         }
 
     }
 
-    private void configurePersonelGrid() {
+    private void configurePersonnelGrid() {
 
         personnelGrid.addClassNames("contact-grid");
         personnelGrid.setSizeFull();
         personnelGrid.setColumns("personnelId", "name", "lastName");
-        personnelGrid.addColumn(personel -> PersonnelPresenter.formatPhoneNumber(personel.getPhone())).setKey("phone");
+        personnelGrid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone()))
+                .setKey("phone")
+                .setHeader(rb.getString("phone"));
 
         personnelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         personnelGrid.asSingleSelect()
                 .addValueChangeListener(event -> {
-                    showRelatedHasta(event.getValue());
+                    showRelatedPatience(event.getValue());
                     if (event.getValue() != null) {
                         String msg = rb.getString("personnelPatienceRelation");
                         msg = MessageFormat.format(msg,
@@ -156,6 +164,9 @@ public class PatiencePersonnelListView extends VerticalLayout {
                         personnelLabel.setText("");
                     }
                 });
+        personnelGrid.getColumnByKey("personnelId").setHeader(rb.getString("personnelId"));
+        personnelGrid.getColumnByKey("name").setHeader(rb.getString("name"));
+        personnelGrid.getColumnByKey("lastName").setHeader(rb.getString("lastName"));
 
     }
 
@@ -168,7 +179,7 @@ public class PatiencePersonnelListView extends VerticalLayout {
             icon = VaadinIcon.FEMALE.create();
             icon.setColor("pink");
         } else {
-            icon = VaadinIcon.QUESTION.create();
+            icon = VaadinIcon.USER.create();
             icon.setColor("gray");
         }
         return icon;
@@ -180,18 +191,18 @@ public class PatiencePersonnelListView extends VerticalLayout {
         patienceFilterText.setPlaceholder(rb.getString("patienceFilterText"));
         patienceFilterText.setClearButtonVisible(true);
         patienceFilterText.setValueChangeMode(ValueChangeMode.LAZY);
-        patienceFilterText.addValueChangeListener(e -> updateHastaList());
+        patienceFilterText.addValueChangeListener(e -> updatePatienceList());
 
         personnelFilterText.setPlaceholder(rb.getString("personnelFilterText"));
         personnelFilterText.setClearButtonVisible(true);
         personnelFilterText.setValueChangeMode(ValueChangeMode.LAZY);
-        personnelFilterText.addValueChangeListener(e -> updatePersonelList());
+        personnelFilterText.addValueChangeListener(e -> updatePersonnelList());
 
         resetGrids.addClickListener(e -> {
             patienceLabel.setText("");
             personnelLabel.setText("");
-            updateHastaList();
-            updatePersonelList();
+            updatePatienceList();
+            updatePersonnelList();
         });
 
         HorizontalLayout toolbar = new HorizontalLayout(patienceFilterText, personnelFilterText, resetGrids, labelLayout);
@@ -199,12 +210,12 @@ public class PatiencePersonnelListView extends VerticalLayout {
         return toolbar;
     }
 
-    private void updateHastaList() {
+    private void updatePatienceList() {
 
         patienceGrid.setItems(patiencePresenter.findAllPatience(patienceFilterText.getValue()));
     }
 
-    private void updatePersonelList() {
+    private void updatePersonnelList() {
 
         personnelGrid.setItems(personnelPresenter.findAllPersonnel(personnelFilterText.getValue()));
     }

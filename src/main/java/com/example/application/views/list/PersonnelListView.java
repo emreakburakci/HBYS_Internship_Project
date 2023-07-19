@@ -3,7 +3,6 @@ package com.example.application.views.list;
 
 import com.example.application.data.entity.Log;
 import com.example.application.data.entity.Personnel;
-
 import com.example.application.data.presenter.PersonnelPresenter;
 import com.example.application.data.service.LogService;
 import com.example.application.util.ResourceBundleUtil;
@@ -29,18 +28,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-
 import javax.annotation.security.PermitAll;
-
-
-//PERSONnEL ID'si SIFIR OLUNCA HATA VERİYOR!!!
 
 
 @Component
 @Scope("prototype")
 @Route(value = "personnel", layout = MainLayout.class)
-@PageTitle("Personnel Listesi | HBYS")
+@PageTitle("Emre HBYS")
+
 @PermitAll
 public class PersonnelListView extends VerticalLayout {
 
@@ -62,6 +57,8 @@ public class PersonnelListView extends VerticalLayout {
         rb = new ResourceBundleUtil(lang);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UI.getCurrent().getPage().setTitle(rb.getString("personnelListTitle"));
+
         currentPrincipalName = authentication.getName();
         addClassName("list-view");
         setSizeFull();

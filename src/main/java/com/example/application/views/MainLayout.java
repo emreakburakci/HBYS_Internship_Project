@@ -24,7 +24,6 @@ import com.vaadin.flow.theme.Theme;
 @PWA(name = "HBYS", shortName = "HBYS", offlinePath = "offline.html", offlineResources = { "./images/offline.png" })
 public class MainLayout extends AppLayout {
     private final SecurityService securityService;
-
     private ResourceBundleUtil rb;
 
     public MainLayout(SecurityService securityService) {
