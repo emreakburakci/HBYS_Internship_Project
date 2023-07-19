@@ -110,7 +110,6 @@ public class PatienceListView extends VerticalLayout {
 
         }).setHeader("Cinsiyet").setAutoWidth(true).setKey("gender");
 
-
         grid.getColumnByKey("name").setHeader(rb.getString("name"));
         grid.getColumnByKey("TCNO").setHeader(rb.getString("TCNO"));
         grid.getColumnByKey("lastName").setHeader(rb.getString("lastName"));

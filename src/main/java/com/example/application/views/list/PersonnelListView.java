@@ -196,7 +196,6 @@ public class PersonnelListView extends VerticalLayout {
             form.setPersonnel(personnel);
             form.setVisible(true);
             addClassName("editing");
-            LogService.log(currentPrincipalName, operationType, personnel.getClass(), personnel.getPersonnelId().toString());
 
         }
     }
