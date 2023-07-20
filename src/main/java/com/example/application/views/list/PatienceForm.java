@@ -17,6 +17,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.shared.Registration;
 
 public class PatienceForm extends FormLayout {
@@ -34,7 +36,6 @@ public class PatienceForm extends FormLayout {
 
         addClassName("Patience-form");
 
-
         rb = new ResourceBundleUtil(lang);
 
         tcno = new TextField(rb.getString("TCNO"));
@@ -43,19 +44,52 @@ public class PatienceForm extends FormLayout {
         gender = new ComboBox<>(rb.getString("gender"), List.of(rb.getString("Erkek"),rb.getString("Kadın"),rb.getString("Diğer")));
         phone = new TextField(rb.getString("phone"));
         email = new EmailField(rb.getString("email"));
-        save = new Button(rb.getString("save"));
-        delete = new Button(rb.getString("delete"));
-        close = new Button(rb.getString("cancel"));
 
-        binder = new BeanValidationBinder<>(Patience.class);
-        binder.bindInstanceFields(this);
+        configureBinder();
 
         add(tcno, name, lastName, email, gender, phone, createButtonsLayout());
     }
 
 
+private void configureBinder(){
+    binder = new BeanValidationBinder<>(Patience.class);
 
+    binder.forField(tcno)
+            .asRequired(rb.getString("tcnoRequiredMessage"))
+            .withValidator(new RegexpValidator(rb.getString("tcnoRegexpMessage"),"^[1-9]{1}[0-9]{9}[02468]{1}$"))
+            .bind(Patience::getTCNO,Patience::setTCNO);
+
+    binder.forField(lastName)
+            .asRequired(rb.getString("lastNameRequiredMessage"))
+            .bind(Patience::getLastName,Patience::setLastName);
+
+    binder.forField(name)
+            .asRequired(rb.getString("nameRequiredMessage"))
+            .bind(Patience::getName,Patience::setName);
+
+    binder.forField(gender)
+            .asRequired(rb.getString("genderRequiredMessage"))
+            .bind(Patience::getGender,Patience::setGender);
+
+    binder.forField(phone)
+            .asRequired(rb.getString("phoneRequiredMessage"))
+            .withValidator(new RegexpValidator(rb.getString("phoneRegexpMessage"),"^[1-9][0-9]{9}$"))
+            .bind(Patience::getPhone,Patience::setPhone);
+
+    binder.forField(email)
+            .asRequired(rb.getString("emailRequiredMessage"))
+            .withValidator(new EmailValidator(rb.getString("emailValidationMessage")))
+            .bind(Patience::getEmail,Patience::setEmail);
+
+
+    //binder.bindInstanceFields(this);
+}
     private HorizontalLayout createButtonsLayout() {
+
+        save = new Button(rb.getString("save"));
+        delete = new Button(rb.getString("delete"));
+        close = new Button(rb.getString("cancel"));
+
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);

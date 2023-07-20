@@ -13,7 +13,10 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.Validator;
+import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.shared.Registration;
+import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
 
 public class PersonnelForm extends FormLayout {
     private Personnel personnel;
@@ -38,7 +41,29 @@ public class PersonnelForm extends FormLayout {
 
 
         binder = new BeanValidationBinder<>(Personnel.class);
-        binder.bindInstanceFields(this);
+
+        binder.forField(name)
+                .asRequired(rb.getString("nameRequiredMessage"))
+                .bind(Personnel::getName,Personnel::setName);
+
+        binder.forField(lastName)
+                .asRequired(rb.getString("lastNameRequiredMessage"))
+                .bind(Personnel::getLastName,Personnel::setLastName);
+
+        binder.forField(personnelId)
+                .asRequired(rb.getString("personnelIdRequiredMessage"))
+                .withValidator(id -> !id.equals(0),rb.getString("personnelIdNotZeroMessage"))
+                .withConverter(Long::valueOf,String::valueOf)
+                .bind(Personnel::getPersonnelId,Personnel::setPersonnelId);
+
+
+
+        binder.forField(phone)
+                .asRequired(rb.getString("phoneRequiredMessage"))
+                .withValidator(new RegexpValidator(rb.getString("phoneRegexpMessage"),"^[1-9][0-9]{9}$"))
+                .bind(Personnel::getPhone,Personnel::setPhone);
+
+        //binder.bindInstanceFields(this);
 
         binder.addStatusChangeListener(event -> {
 
@@ -53,6 +78,8 @@ public class PersonnelForm extends FormLayout {
         phone.addValueChangeListener(event -> save.setEnabled(binder.isValid()));
 
         add(personnelId, name, lastName, phone, createButtonsLayout());
+
+
     }
     private HorizontalLayout createButtonsLayout() {
 
@@ -80,6 +107,9 @@ public class PersonnelForm extends FormLayout {
     public void setPersonnel(Personnel personnel) {
         this.personnel = personnel;
         binder.readBean(personnel);
+        if(personnel != null && personnel.getPersonnelId() == null){
+        personnelId.setValue("");
+        }
     }
 
     private void validateAndSave() {

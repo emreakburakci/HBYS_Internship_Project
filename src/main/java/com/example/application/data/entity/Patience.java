@@ -19,25 +19,25 @@ import javax.validation.constraints.Pattern;
 public class Patience {
 
     @Id
-    @Pattern(regexp = "^[1-9]{1}[0-9]{9}[02468]{1}$", message = "Geçerli bir TC Kimlik Numarası giriniz!")
+    //@Pattern(regexp = "^[1-9]{1}[0-9]{9}[02468]{1}$", message = "Geçerli bir TC Kimlik Numarası giriniz!")
     private String TCNO;
 
-    @NotEmpty
+    //@NotEmpty
     private String name = "";
 
-    @NotEmpty
+    //@NotEmpty
     private String lastName = "";
 
-    @NotEmpty
+    //@NotEmpty
     private String gender;
 
     
-    @Pattern(regexp="^[1-9][0-9]{9}$"
-            , message="Lütfen 5XXXXXXXXX formatında giriniz!")
+    //@Pattern(regexp="^[1-9][0-9]{9}$"
+    //        , message="Lütfen 5XXXXXXXXX formatında giriniz!")
     private String phone;
 
-    @Email
-    @NotEmpty
+    //@Email
+    //@NotEmpty
     private String email = "";
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

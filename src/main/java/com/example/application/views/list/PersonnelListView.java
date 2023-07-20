@@ -187,6 +187,7 @@ public class PersonnelListView extends VerticalLayout {
         } else {
 
             if (personnel.getPersonnelId() == null || personnel.getPersonnelId().equals(Long.valueOf(0))) {
+
                 operationType = Log.OperationType.CREATE;
             } else {
                 operationType = Log.OperationType.UPDATE;

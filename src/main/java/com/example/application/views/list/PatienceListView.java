@@ -151,8 +151,7 @@ public class PatienceListView extends VerticalLayout {
 
         Button addPatienceButton = new Button(rb.getString("addPatience"));
         addPatienceButton.addClickListener(click -> addPatience());
-        addPatienceButton.addClickShortcut(Key.KEY_H);
-        
+
 
 
         relateButton = new Button(rb.getString("relate"), event -> UI.getCurrent().navigate(PatienceRelationView.class, new RouteParameters("PatienceTC", selectedPatience == null ? "": selectedPatience.getTCNO() )  ));
