@@ -1,17 +1,23 @@
-# Spring Boot and Vaadin course source code
+# HMIS(Health Management Infromation Systems) Internship Project with Spring Boot and Vaadin
+# Info
+This repository contains the source code for the Internship Project of HMIS 
+Organisation: Monad Software and Consultancy
+# Author
+Emre AKBURAKCI
 
-This repository contains the source code for the [Building Modern Web Applications With Spring Boot and Vaadin](https://vaadin.com/docs/v14/flow/tutorials/in-depth-course).
+GitHub: https://github.com/emreakburakci
 
-*Live demo:* https://crm.demo.vaadin.com
+LinkedIn: https://www.linkedin.com/in/emreakburakci/
 
-[![Open in online IDE ](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/vaadin/flow-crm-tutorial/tree/v14) 
-
+# Project Components
+- JAVA
+- Spring
+- Spring Boot
+- Spring Security
+- Spring JPA
+- Vaadin FW Flow API
+- Maven
+- IntelliJ IDEA
 ## Branches
 
-- The main branch contains the source code for the latest Vaadin release
-- The `v14` branch contains the source code for Vaadin 14 LTS
-
-
-## Text tutorial
-You can find a text version of the tutorial in the [Vaadin Documentation](https://vaadin.com/docs/v14/flow/tutorials/in-depth-course).
-# CHANGE
+- The main branch contains the source code for the latest release
