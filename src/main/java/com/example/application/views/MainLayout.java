@@ -33,7 +33,7 @@ public class MainLayout extends AppLayout {
 
         if (language == null || ((String) language).equals("")) {
 
-            VaadinSession.getCurrent().setAttribute("language", "English");
+            VaadinSession.getCurrent().setAttribute("language", "Türkçe");
 
         }
 
@@ -83,8 +83,11 @@ public class MainLayout extends AppLayout {
 
         RouterLink listLink3 = new RouterLink(rb.getString("personnelPatienceList"), PatiencePersonnelListView.class);
         listLink2.setHighlightCondition(HighlightConditions.sameLocation());
+
+        RouterLink listLink4 = new RouterLink(rb.getString("personnelDashboardView"), PersonnelDashboardView.class);
+        listLink2.setHighlightCondition(HighlightConditions.sameLocation());
         
         addToDrawer(new VerticalLayout(
-                listLink, listLink2, listLink3));
+                listLink, listLink2, listLink3, listLink4));
     }
 }
