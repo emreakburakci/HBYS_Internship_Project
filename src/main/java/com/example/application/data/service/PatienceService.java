@@ -53,4 +53,8 @@ public class PatienceService {
         patienceRepository.save(patience);
     }
 
+    public long getPatienceCount(){
+        return patienceRepository.getPatienceCount();
+    }
+
 }

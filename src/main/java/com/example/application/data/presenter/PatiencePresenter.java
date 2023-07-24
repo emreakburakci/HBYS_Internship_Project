@@ -87,4 +87,7 @@ public class PatiencePresenter {
 
     }
 
+    public long getPatienceCount(){
+        return patienceService.getPatienceCount();
+    }
 }

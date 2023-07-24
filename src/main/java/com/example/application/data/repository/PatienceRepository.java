@@ -14,4 +14,9 @@ public interface PatienceRepository extends JpaRepository<Patience, String> {
         "where lower(h.name) like lower(concat('%', :searchTerm, '%')) " +
         "or lower(h.lastName) like lower(concat('%', :searchTerm, '%'))")
     List<Patience> search(@Param("searchTerm") String searchTerm);
+
+    @Query(value = "SELECT COUNT(*) FROM patience", nativeQuery = true)
+    long getPatienceCount();
+
+
 }
