@@ -1,8 +1,7 @@
 # HMIS(Health Management Infromation Systems) Internship Project with Spring Boot and Vaadin
 # Info
-This repository contains the source code for the Internship Project of HMIS
-
-Organisation: Monad Software and Consultancy
+- This repository contains the source code for the Internship Project of HMIS
+- Organisation: Monad Software and Consultancy
 # Author
 Emre AKBURAKCI
 
