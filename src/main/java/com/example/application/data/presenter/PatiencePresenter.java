@@ -3,9 +3,9 @@ package com.example.application.data.presenter;
 import java.util.List;
 import java.util.Set;
 
+import com.example.application.data.entity.Doctor;
 import org.springframework.stereotype.Component;
 import com.example.application.data.entity.Patience;
-import com.example.application.data.entity.Personnel;
 import com.example.application.data.service.PatienceService;
 
 @Component
@@ -80,7 +80,7 @@ public class PatiencePresenter {
         patienceService.savePatience(patience);
     }
 
-    public Set<Personnel> getRelatedPersonnels(Patience patience) {
+    public Set<Doctor> getRelatedPersonnels(Patience patience) {
 
 
        return  patience.getPersonnelSet();

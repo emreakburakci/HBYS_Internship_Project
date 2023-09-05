@@ -1,9 +1,10 @@
 package com.example.application.views.list;
 
+import com.example.application.data.entity.Doctor;
 import com.example.application.data.entity.Patience;
-import com.example.application.data.entity.Personnel;
+import com.example.application.data.entity.Doctor;
 import com.example.application.data.presenter.PatiencePresenter;
-import com.example.application.data.presenter.PersonnelPresenter;
+import com.example.application.data.presenter.DoctorPresenter;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.UI;
@@ -32,25 +33,25 @@ import javax.annotation.security.PermitAll;
 @PageTitle("Emre HBYS")
 
 @PermitAll
-public class PatiencePersonnelListView extends VerticalLayout {
+public class PatienceDoctorListView extends VerticalLayout {
 
     Grid<Patience> patienceGrid;
-    Grid<Personnel> personnelGrid;
+    Grid<Doctor> personnelGrid;
     TextField patienceFilterText, personnelFilterText;
     Button resetGrids;
     ResourceBundleUtil rb;
     FormLayout labelLayout ;
     H3 patienceLabel, personnelLabel;
     PatiencePresenter patiencePresenter;
-    PersonnelPresenter personnelPresenter;
+    DoctorPresenter personnelPresenter;
 
-    public PatiencePersonnelListView(PatiencePresenter patiencePresenter, PersonnelPresenter personnelPresenter) {
+    public PatienceDoctorListView(PatiencePresenter patiencePresenter, DoctorPresenter personnelPresenter) {
 
         this.patiencePresenter = patiencePresenter;
         this.personnelPresenter = personnelPresenter;
 
         patienceGrid = new Grid<>(Patience.class);
-        personnelGrid = new Grid<>(Personnel.class);
+        personnelGrid = new Grid<>(Doctor.class);
 
         patienceFilterText = new TextField();
         personnelFilterText = new TextField();
@@ -133,7 +134,7 @@ public class PatiencePersonnelListView extends VerticalLayout {
         }
     }
 
-    private void showRelatedPatience(Personnel personnel) {
+    private void showRelatedPatience(Doctor personnel) {
 
         if (personnel != null) {
             patienceGrid.setItems(personnel.getPatienceSet());
@@ -147,7 +148,7 @@ public class PatiencePersonnelListView extends VerticalLayout {
         personnelGrid.addClassNames("contact-grid");
         personnelGrid.setSizeFull();
         personnelGrid.setColumns("personnelId", "name", "lastName");
-        personnelGrid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone()))
+        personnelGrid.addColumn(personnel -> DoctorPresenter.formatPhoneNumber(personnel.getPhone()))
                 .setKey("phone")
                 .setHeader(rb.getString("phone"));
 

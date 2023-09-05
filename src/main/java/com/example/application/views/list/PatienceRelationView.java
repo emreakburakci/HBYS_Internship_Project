@@ -2,10 +2,11 @@ package com.example.application.views.list;
 
 import java.util.List;
 import java.util.Set;
+
+import com.example.application.data.entity.Doctor;
 import com.example.application.data.entity.Patience;
-import com.example.application.data.entity.Personnel;
+import com.example.application.data.presenter.DoctorPresenter;
 import com.example.application.data.presenter.PatiencePresenter;
-import com.example.application.data.presenter.PersonnelPresenter;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -28,20 +29,20 @@ import com.vaadin.flow.server.VaadinSession;
 @PageTitle("Emre HBYS")
 public class PatienceRelationView extends VerticalLayout implements HasUrlParameter<String> {
 
-    PersonnelPresenter personnelPresenter;
+    DoctorPresenter personnelPresenter;
     PatiencePresenter patiencePresenter;
-    Grid<Personnel> relatedPersonnelGrid, notRelatedPersonnelGrid;
+    Grid<Doctor> relatedPersonnelGrid, notRelatedPersonnelGrid;
     FormLayout patienceInfo, gridLabels;
     ResourceBundleUtil rb;
     Patience patience;
 
-    public PatienceRelationView(PersonnelPresenter personnelPresenter, PatiencePresenter patiencePresenter) {
+    public PatienceRelationView(DoctorPresenter personnelPresenter, PatiencePresenter patiencePresenter) {
 
         this.personnelPresenter = personnelPresenter;
         this.patiencePresenter = patiencePresenter;
 
-        relatedPersonnelGrid = new Grid<>(Personnel.class);
-        notRelatedPersonnelGrid = new Grid<>(Personnel.class);
+        relatedPersonnelGrid = new Grid<>(Doctor.class);
+        notRelatedPersonnelGrid = new Grid<>(Doctor.class);
 
         rb = new ResourceBundleUtil((VaadinSession.getCurrent().getAttribute("language").toString()));
 
@@ -108,7 +109,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         notRelatedPersonnelGrid.addClassNames("personel-grid");
         notRelatedPersonnelGrid.setSizeFull();
         notRelatedPersonnelGrid.setColumns("personnelId", "name", "lastName");
-        notRelatedPersonnelGrid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone())).setKey("phone");
+        notRelatedPersonnelGrid.addColumn(personnel -> DoctorPresenter.formatPhoneNumber(personnel.getPhone())).setKey("phone");
         notRelatedPersonnelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         notRelatedPersonnelGrid.addComponentColumn(personnel -> {
@@ -135,7 +136,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         relatedPersonnelGrid.addClassNames("personel-grid");
         relatedPersonnelGrid.setSizeFull();
         relatedPersonnelGrid.setColumns("personnelId", "name", "lastName");
-        relatedPersonnelGrid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone())).setKey("phone");
+        relatedPersonnelGrid.addColumn(personnel -> DoctorPresenter.formatPhoneNumber(personnel.getPhone())).setKey("phone");
         relatedPersonnelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         relatedPersonnelGrid.addComponentColumn(personnel -> {
@@ -155,7 +156,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
         });
     }
 
-    private void unRelate(Personnel personnel) {
+    private void unRelate(Doctor personnel) {
 
         patience.getPersonnelSet().remove(personnel);
         patience = patiencePresenter.saveAndFlush(patience);
@@ -164,7 +165,7 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
 
     }
 
-    private void relate(Personnel personnel) {
+    private void relate(Doctor personnel) {
 
         patience.getPersonnelSet().add(personnel);
         patience = patiencePresenter.saveAndFlush(patience);
@@ -183,11 +184,11 @@ public class PatienceRelationView extends VerticalLayout implements HasUrlParame
     private void updateNotRelatedPersonnelGrid() {
 
 
-        List<Personnel> all = personnelPresenter.findAllPersonnel("");
-        Set<Personnel> relatedPersonnelSet = patience.getPersonnelSet();
+        List<Doctor> all = personnelPresenter.findAllPersonnel("");
+        Set<Doctor> relatedPersonnelSet = patience.getPersonnelSet();
 
         all.removeIf(p -> {
-            for (Personnel setP : relatedPersonnelSet) {
+            for (Doctor setP : relatedPersonnelSet) {
                 if (p.getPersonnelId() == setP.getPersonnelId()) {
                     return true;
                 }

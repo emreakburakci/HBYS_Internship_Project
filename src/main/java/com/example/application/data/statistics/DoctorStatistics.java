@@ -1,11 +1,12 @@
 package com.example.application.data.statistics;
 
+import com.example.application.data.entity.Doctor;
 import com.example.application.data.entity.Patience;
-import com.example.application.data.entity.Personnel;
+import com.example.application.data.entity.Doctor;
 
 import java.util.Set;
 
-public class PersonnelStatistics {
+public class DoctorStatistics {
 
     private Long personnelId;
     private String fullName;
@@ -14,7 +15,7 @@ public class PersonnelStatistics {
     private long femaleGenderPatienceCount;
     private long otherGenderPatienceCount;
 
-    public PersonnelStatistics(Personnel personnel){
+    public DoctorStatistics(Doctor personnel){
         Set<Patience> patiences = personnel.getPatienceSet();
 
         setFullName(personnel.getName() + " " + personnel.getLastName());

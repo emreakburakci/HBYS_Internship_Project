@@ -2,18 +2,16 @@ package com.example.application.data.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-import java.time.Instant;
-import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.time.Instant;
+import java.util.Set;
 
 @Entity
-public class Personnel {
+public class Doctor {
 
     @Id
     @Range(min = 1, message = "Personel Id 0 yada negatif olamaz!")
@@ -117,8 +115,8 @@ public class Personnel {
     @Override
     public boolean equals(Object o) {
 
-        if (o instanceof Personnel) {
-            if (((Personnel) o).getPersonnelId() == (this.getPersonnelId())) {
+        if (o instanceof Doctor) {
+            if (((Doctor) o).getPersonnelId() == (this.getPersonnelId())) {
                 return true;
             }
         }

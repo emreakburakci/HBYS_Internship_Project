@@ -1,10 +1,10 @@
 package com.example.application.views;
 
 import com.example.application.data.entity.Patience;
-import com.example.application.data.entity.Personnel;
-import com.example.application.data.presenter.PersonnelPresenter;
-import com.example.application.data.service.PersonnelStatisticsService;
-import com.example.application.data.statistics.PersonnelStatistics;
+import com.example.application.data.entity.Doctor;
+import com.example.application.data.presenter.DoctorPresenter;
+import com.example.application.data.service.DoctorStatisticsService;
+import com.example.application.data.statistics.DoctorStatistics;
 import com.example.application.util.ResourceBundleUtil;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.*;
@@ -27,20 +27,20 @@ import java.util.Set;
 @Route(value = "personnel-dashboard", layout = MainLayout.class)
 @PageTitle("Emre HBYS")
 @PermitAll
-public class PersonnelDashboardView extends VerticalLayout {
+public class DoctorDashboardView extends VerticalLayout {
 
 
     String lang;
     ResourceBundleUtil rb;
-    PersonnelPresenter personnelPresenter;
-    PersonnelStatisticsService personnelStatisticsService;
+    DoctorPresenter personnelPresenter;
+    DoctorStatisticsService personnelStatisticsService;
     Chart genderPieChart;
 
-    List<Personnel> personnelList;
-    Grid<Personnel> grid;
+    List<Doctor> personnelList;
+    Grid<Doctor> grid;
 
 
-    public PersonnelDashboardView(PersonnelPresenter personnelPresenter, PersonnelStatisticsService personnelStatisticsService) {
+    public DoctorDashboardView(DoctorPresenter personnelPresenter, DoctorStatisticsService personnelStatisticsService) {
         lang = VaadinSession.getCurrent().getAttribute("language").toString();
         rb = new ResourceBundleUtil(lang);
 
@@ -49,7 +49,7 @@ public class PersonnelDashboardView extends VerticalLayout {
         this.personnelList = personnelPresenter.findAllPersonnel("");
         addClassName("list-view");
         setSizeFull();
-        grid = new Grid<>(Personnel.class);
+        grid = new Grid<>(Doctor.class);
         genderPieChart = new Chart(ChartType.PIE);
 
         configureGrid();
@@ -62,7 +62,7 @@ public class PersonnelDashboardView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("personnelId", "name", "lastName");
 
-        grid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone())).setAutoWidth(true).setKey("phone");
+        grid.addColumn(personnel -> DoctorPresenter.formatPhoneNumber(personnel.getPhone())).setAutoWidth(true).setKey("phone");
 
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
@@ -76,10 +76,10 @@ public class PersonnelDashboardView extends VerticalLayout {
         grid.setItems(personnelList);
     }
 
-    private Chart updatePieChart(Personnel personnel){
+    private Chart updatePieChart(Doctor personnel){
 
         if(personnel != null) {
-            PersonnelStatistics personnelStatistics = personnelStatisticsService.getPersonnelStatistics(personnel.getPersonnelId().toString());
+            DoctorStatistics personnelStatistics = personnelStatisticsService.getPersonnelStatistics(personnel.getPersonnelId().toString());
 
             long maleCount = personnelStatistics.getMaleGenderPatienceCount();
             long femaleCount = personnelStatistics.getFemaleGenderPatienceCount();
@@ -139,7 +139,7 @@ public class PersonnelDashboardView extends VerticalLayout {
     private Chart getPatiencesPerPersonnelBarChart(){
 
 
-        List<PersonnelStatistics> statList = personnelStatisticsService.getAllPersonnelStatistics();
+        List<DoctorStatistics> statList = personnelStatisticsService.getAllPersonnelStatistics();
 
 
 
@@ -154,7 +154,7 @@ public class PersonnelDashboardView extends VerticalLayout {
 
 
 
-        for(PersonnelStatistics ps : statList) {
+        for(DoctorStatistics ps : statList) {
             x.addCategory(ps.getFullName());
 
             series.addData(ps.getPatienceCount());

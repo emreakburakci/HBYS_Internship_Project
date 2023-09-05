@@ -1,6 +1,7 @@
 package com.example.application.views.list;
 
-import com.example.application.data.entity.Personnel;
+import com.example.application.data.entity.Doctor;
+import com.example.application.data.entity.Doctor;
 import com.example.application.util.ResourceBundleUtil;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -18,14 +19,14 @@ import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.shared.Registration;
 import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
 
-public class PersonnelForm extends FormLayout {
-    private Personnel personnel;
-    private Binder<Personnel> binder;
+public class DoctorForm extends FormLayout {
+    private Doctor personnel;
+    private Binder<Doctor> binder;
     private TextField name, lastName, personnelId, phone;
     private Button save, delete, close;
     private ResourceBundleUtil rb;
 
-    public PersonnelForm(String lang) {
+    public DoctorForm(String lang) {
         addClassName("personel-form");
 
         rb = new ResourceBundleUtil(lang);
@@ -40,28 +41,28 @@ public class PersonnelForm extends FormLayout {
         close = new Button(rb.getString("cancel"));
 
 
-        binder = new BeanValidationBinder<>(Personnel.class);
+        binder = new BeanValidationBinder<>(Doctor.class);
 
         binder.forField(name)
                 .asRequired(rb.getString("nameRequiredMessage"))
-                .bind(Personnel::getName,Personnel::setName);
+                .bind(Doctor::getName,Doctor::setName);
 
         binder.forField(lastName)
                 .asRequired(rb.getString("lastNameRequiredMessage"))
-                .bind(Personnel::getLastName,Personnel::setLastName);
+                .bind(Doctor::getLastName,Doctor::setLastName);
 
         binder.forField(personnelId)
                 .asRequired(rb.getString("personnelIdRequiredMessage"))
                 .withValidator(id -> !id.equals(0),rb.getString("personnelIdNotZeroMessage"))
                 .withConverter(Long::valueOf,String::valueOf)
-                .bind(Personnel::getPersonnelId,Personnel::setPersonnelId);
+                .bind(Doctor::getPersonnelId,Doctor::setPersonnelId);
 
 
 
         binder.forField(phone)
                 .asRequired(rb.getString("phoneRequiredMessage"))
                 .withValidator(new RegexpValidator(rb.getString("phoneRegexpMessage"),"^[1-9][0-9]{9}$"))
-                .bind(Personnel::getPhone,Personnel::setPhone);
+                .bind(Doctor::getPhone,Doctor::setPhone);
 
         //binder.bindInstanceFields(this);
 
@@ -104,7 +105,7 @@ public class PersonnelForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
-    public void setPersonnel(Personnel personnel) {
+    public void setPersonnel(Doctor personnel) {
         this.personnel = personnel;
         binder.readBean(personnel);
         if(personnel != null && personnel.getPersonnelId() == null){
@@ -122,34 +123,34 @@ public class PersonnelForm extends FormLayout {
     }
 
     // Events
-    public static abstract class PersonnelFormEvent extends ComponentEvent<PersonnelForm> {
-        private Personnel personnel;
+    public static abstract class PersonnelFormEvent extends ComponentEvent<DoctorForm> {
+        private Doctor personnel;
 
-        protected PersonnelFormEvent(PersonnelForm source, Personnel personnel) {
+        protected PersonnelFormEvent(DoctorForm source, Doctor personnel) {
             super(source, false);
             this.personnel = personnel;
         }
 
-        public Personnel getPersonnel() {
+        public Doctor getPersonnel() {
             return personnel;
         }
     }
 
     public static class SaveEvent extends PersonnelFormEvent {
-        SaveEvent(PersonnelForm source, Personnel personel) {
+        SaveEvent(DoctorForm source, Doctor personel) {
             super(source, personel);
         }
     }
 
     public static class DeleteEvent extends PersonnelFormEvent {
-        DeleteEvent(PersonnelForm source, Personnel personel) {
+        DeleteEvent(DoctorForm source, Doctor personel) {
             super(source, personel);
         }
 
     }
 
     public static class CloseEvent extends PersonnelFormEvent {
-        CloseEvent(PersonnelForm source) {
+        CloseEvent(DoctorForm source) {
             super(source, null);
         }
     }

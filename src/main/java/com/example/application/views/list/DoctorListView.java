@@ -1,9 +1,9 @@
 package com.example.application.views.list;
 
 
+import com.example.application.data.entity.Doctor;
 import com.example.application.data.entity.Log;
-import com.example.application.data.entity.Personnel;
-import com.example.application.data.presenter.PersonnelPresenter;
+import com.example.application.data.presenter.DoctorPresenter;
 import com.example.application.data.service.LogService;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
@@ -37,21 +37,21 @@ import javax.annotation.security.PermitAll;
 @PageTitle("Emre HBYS")
 
 @PermitAll
-public class PersonnelListView extends VerticalLayout {
+public class DoctorListView extends VerticalLayout {
 
-    private Grid<Personnel> grid = new Grid<>(Personnel.class);
+    private Grid<Doctor> grid = new Grid<>(Doctor.class);
     private TextField filterText = new TextField();
-    private PersonnelForm form;
-    private PersonnelPresenter presenter;
+    private DoctorForm form;
+    private DoctorPresenter presenter;
     private Button relateButton;
-    private Personnel selectedPersonnel;
+    private Doctor selectedPersonnel;
     private ResourceBundleUtil rb;
     private String currentPrincipalName;
     private Log.OperationType operationType;
 
     private String lang;
 
-    public PersonnelListView(PersonnelPresenter presenter) {
+    public DoctorListView(DoctorPresenter presenter) {
         this.presenter = presenter;
         lang = VaadinSession.getCurrent().getAttribute("language").toString();
         rb = new ResourceBundleUtil(lang);
@@ -80,11 +80,11 @@ public class PersonnelListView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new PersonnelForm(lang);
+        form = new DoctorForm(lang);
         form.setWidth("25em");
-        form.addListener(PersonnelForm.SaveEvent.class, this::savePersonnel);
-        form.addListener(PersonnelForm.DeleteEvent.class, this::deletePersonnel);
-        form.addListener(PersonnelForm.CloseEvent.class, e -> closeEditor());
+        form.addListener(DoctorForm.SaveEvent.class, this::savePersonnel);
+        form.addListener(DoctorForm.DeleteEvent.class, this::deletePersonnel);
+        form.addListener(DoctorForm.CloseEvent.class, e -> closeEditor());
     }
 
     private void configureGrid() {
@@ -92,7 +92,7 @@ public class PersonnelListView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("personnelId", "name", "lastName");
 
-        grid.addColumn(personnel -> PersonnelPresenter.formatPhoneNumber(personnel.getPhone())).setAutoWidth(true).setKey("phone");
+        grid.addColumn(personnel -> DoctorPresenter.formatPhoneNumber(personnel.getPhone())).setAutoWidth(true).setKey("phone");
 
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
@@ -121,7 +121,7 @@ public class PersonnelListView extends VerticalLayout {
         Button addPersonnelButton = new Button(rb.getString("addPersonnel"));
         addPersonnelButton.addClickListener(click -> addPersonnel());
 
-        relateButton = new Button(rb.getString("relate"), event -> UI.getCurrent().navigate(PersonnelRelationView.class, new RouteParameters("pid", selectedPersonnel == null ? "" : ("" + selectedPersonnel.getPersonnelId()))));
+        relateButton = new Button(rb.getString("relate"), event -> UI.getCurrent().navigate(DoctorRelationView.class, new RouteParameters("pid", selectedPersonnel == null ? "" : ("" + selectedPersonnel.getPersonnelId()))));
         relateButton.setEnabled(false);
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addPersonnelButton, relateButton);
@@ -129,7 +129,7 @@ public class PersonnelListView extends VerticalLayout {
         return toolbar;
     }
 
-    private void savePersonnel(PersonnelForm.SaveEvent event) {
+    private void savePersonnel(DoctorForm.SaveEvent event) {
 
         if (operationType == Log.OperationType.CREATE) {
             event.getPersonnel().setCreatedUserId(currentPrincipalName);
@@ -143,7 +143,7 @@ public class PersonnelListView extends VerticalLayout {
         closeEditor();
     }
 
-    private void hasRelationNotification(Personnel p) {
+    private void hasRelationNotification(Doctor p) {
 
         Notification notification = new Notification();
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -165,7 +165,7 @@ public class PersonnelListView extends VerticalLayout {
         notification.open();
     }
 
-    private void deletePersonnel(PersonnelForm.DeleteEvent event) {
+    private void deletePersonnel(DoctorForm.DeleteEvent event) {
         if (!event.getPersonnel().getPatienceSet().isEmpty()) {
             hasRelationNotification(event.getPersonnel());
         } else {
@@ -177,7 +177,7 @@ public class PersonnelListView extends VerticalLayout {
         closeEditor();
     }
 
-    public void editPersonnel(Personnel personnel) {
+    public void editPersonnel(Doctor personnel) {
         System.out.println("EDIT PERSONnEL CALISTI");
         selectedPersonnel = personnel;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -204,7 +204,7 @@ public class PersonnelListView extends VerticalLayout {
     private void addPersonnel() {
 
         grid.asSingleSelect().clear();
-        editPersonnel(new Personnel());
+        editPersonnel(new Doctor());
 
     }
 

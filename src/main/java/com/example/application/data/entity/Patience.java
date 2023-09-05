@@ -44,7 +44,7 @@ public class Patience {
     @JoinTable(name = "hasta_personel",
     joinColumns = @JoinColumn(name ="TCNO"),
     inverseJoinColumns = @JoinColumn(name ="personnelId"))
-    private Set<Personnel> personnelSet;
+    private Set<Doctor> personnelSet;
 
     @CreationTimestamp
     private Instant createdOn;
@@ -144,12 +144,12 @@ public class Patience {
     }
 
 
-    public Set<Personnel> getPersonnelSet() {
+    public Set<Doctor> getPersonnelSet() {
         return personnelSet;
     }
 
 
-    public void setPersonnelSet(Set<Personnel> personelSet) {
+    public void setPersonnelSet(Set<Doctor> personelSet) {
         this.personnelSet = personelSet;
     }
 

@@ -1,22 +1,22 @@
 package com.example.application.data.service;
 
-import com.example.application.data.entity.Personnel;
-import com.example.application.data.repository.PersonnelRepository;
+import com.example.application.data.entity.Doctor;
+import com.example.application.data.repository.DoctorRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PersonnelService {
+public class DoctorService {
 
-    private final PersonnelRepository personnelRepository;
+    private final DoctorRepository personnelRepository;
 
 
-    public PersonnelService(PersonnelRepository personnelRepository) {
+    public DoctorService(DoctorRepository personnelRepository) {
         this.personnelRepository = personnelRepository;
 
     }
 
-    public List<Personnel> findAllPersonnel(String stringFilter) {
+    public List<Doctor> findAllPersonnel(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
             return personnelRepository.findAll();
         } else {
@@ -28,11 +28,11 @@ public class PersonnelService {
         return personnelRepository.count();
     }
 
-    public void deletePersonnel(Personnel personnel) {
+    public void deletePersonnel(Doctor personnel) {
         personnelRepository.delete(personnel);
     }
 
-    public void savePersonnel(Personnel personnel) {
+    public void savePersonnel(Doctor personnel) {
         if (personnel == null) {
             System.err.println("Hasta is null. Are you sure you have connected your form to the application?");
             return;
@@ -40,11 +40,11 @@ public class PersonnelService {
         personnelRepository.save(personnel);
     }
 
-    public Personnel findById(String id) {
+    public Doctor findById(String id) {
        return personnelRepository.findById(Long.parseLong(id)).get();
     }
 
-    public Personnel saveAndFlush(Personnel personnel) {
+    public Doctor saveAndFlush(Doctor personnel) {
         return personnelRepository.saveAndFlush(personnel);
     }
 

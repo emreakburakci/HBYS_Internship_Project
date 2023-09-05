@@ -2,17 +2,17 @@ package com.example.application.data.presenter;
 
 import java.util.List;
 
+import com.example.application.data.entity.Doctor;
+import com.example.application.data.service.DoctorService;
 import org.springframework.stereotype.Component;
 
-import com.example.application.data.entity.Personnel;
-import com.example.application.data.service.PersonnelService;
 
 @Component
-public class PersonnelPresenter {
-    
-    PersonnelService personnelService;
+public class DoctorPresenter {
 
-    public PersonnelPresenter(PersonnelService personnelService){
+    DoctorService personnelService;
+
+    public DoctorPresenter(DoctorService personnelService){
 
         this.personnelService = personnelService;
         
@@ -20,9 +20,9 @@ public class PersonnelPresenter {
 
 
 
-     public List<Personnel> findAllPersonnel(String stringFilter) {
+     public List<Doctor> findAllPersonnel(String stringFilter) {
         
-            List<Personnel> personelList = personnelService.findAllPersonnel(stringFilter);
+            List<Doctor> personelList = personnelService.findAllPersonnel(stringFilter);
 
             return personelList;
         
@@ -41,11 +41,11 @@ public class PersonnelPresenter {
         return personnelService.countPersonnel();
     }
 
-    public void deletePersonnel(Personnel personnel) {
+    public void deletePersonnel(Doctor personnel) {
         personnelService.deletePersonnel(personnel);
     }
 
-    public void savePersonnel(Personnel personnel) {
+    public void savePersonnel(Doctor personnel) {
         if (personnel == null) {
             System.err.println("Hasta is null. Are you sure you have connected your form to the application?");
             return;
@@ -55,7 +55,7 @@ public class PersonnelPresenter {
 
 
 
-    public Personnel findById(String id) {
+    public Doctor findById(String id) {
        return personnelService.findById(id);
 
       
@@ -63,7 +63,7 @@ public class PersonnelPresenter {
 
 
 
-    public Personnel saveAndFlush(Personnel personel) {
+    public Doctor saveAndFlush(Doctor personel) {
         return personnelService.saveAndFlush(personel);
     }
 

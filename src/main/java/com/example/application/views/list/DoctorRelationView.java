@@ -5,9 +5,9 @@ package com.example.application.views.list;
 import java.util.List;
 import java.util.Set;
 import com.example.application.data.entity.Patience;
-import com.example.application.data.entity.Personnel;
+import com.example.application.data.entity.Doctor;
+import com.example.application.data.presenter.DoctorPresenter;
 import com.example.application.data.presenter.PatiencePresenter;
-import com.example.application.data.presenter.PersonnelPresenter;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -29,20 +29,20 @@ import com.vaadin.flow.server.VaadinSession;
 @Route(value = "relp/:pid", layout = MainLayout.class)
 @PageTitle("Emre HBYS")
 
-public class PersonnelRelationView extends VerticalLayout implements HasUrlParameter<String> {
+public class DoctorRelationView extends VerticalLayout implements HasUrlParameter<String> {
 
-    PersonnelPresenter personnelPresenter;
+    DoctorPresenter personnelPresenter;
     PatiencePresenter patiencePresenter;
 
     Grid<Patience> relatedPatienceGrid = new Grid<>(Patience.class);
     Grid<Patience> notRelatedPatienceGrid = new Grid<>(Patience.class);
     FormLayout personnelInfo;
     FormLayout gridLabels;
-    Personnel personnel;
+    Doctor personnel;
 
     ResourceBundleUtil rb;
 
-    public PersonnelRelationView(PersonnelPresenter personnelPresenter, PatiencePresenter patiencePresenter) {
+    public DoctorRelationView(DoctorPresenter personnelPresenter, PatiencePresenter patiencePresenter) {
 
         this.personnelPresenter = personnelPresenter;
         this.patiencePresenter = patiencePresenter;

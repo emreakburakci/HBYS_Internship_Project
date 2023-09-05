@@ -3,8 +3,8 @@ package com.example.application.views;
 import com.example.application.security.SecurityService;
 import com.example.application.util.ResourceBundleUtil;
 import com.example.application.views.list.PatienceListView;
-import com.example.application.views.list.PatiencePersonnelListView;
-import com.example.application.views.list.PersonnelListView;
+import com.example.application.views.list.PatienceDoctorListView;
+import com.example.application.views.list.DoctorListView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -45,7 +45,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("Emre HBYS");
+        H1 logo = new H1("HBYS");
         logo.addClassNames("text-l", "m-m");
 
         Button logout = new Button(rb.getString("logout"), e -> securityService.logout());
@@ -78,13 +78,13 @@ public class MainLayout extends AppLayout {
         RouterLink listLink = new RouterLink(rb.getString("patienceList"), PatienceListView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink listLink2 = new RouterLink(rb.getString("personnelList"), PersonnelListView.class);
+        RouterLink listLink2 = new RouterLink(rb.getString("personnelList"), DoctorListView.class);
         listLink2.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink listLink3 = new RouterLink(rb.getString("personnelPatienceList"), PatiencePersonnelListView.class);
+        RouterLink listLink3 = new RouterLink(rb.getString("personnelPatienceList"), PatienceDoctorListView.class);
         listLink2.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink listLink4 = new RouterLink(rb.getString("personnelDashboardView"), PersonnelDashboardView.class);
+        RouterLink listLink4 = new RouterLink(rb.getString("personnelDashboardView"), DoctorDashboardView.class);
         listLink2.setHighlightCondition(HighlightConditions.sameLocation());
         
         addToDrawer(new VerticalLayout(
